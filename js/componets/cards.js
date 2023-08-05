@@ -81,6 +81,7 @@ if (CardData != null) {
     CardData.onreadystatechange = function() {
         if (CardData.readyState == 4 & CardData.status == 200) {
             var obj = JSON.parse(CardData.responseText);
+            console.log(obj)
             for (var name in obj) {
                 console.log(obj[name].key);
             }
