@@ -1,89 +1,23 @@
-function cardData (id,title,describe,siteurl,islight,bimage){
-    this.id = id
-    this.title = title
-    this.describe = describe
-    this.siteurl = siteurl
-    this.islight = islight
-    this.bimage = bimage
-};
-/*
-var CardData = [
-    [
-        new cardData(
-            "collei-birthday-2023",
-            "柯莱“留影”纪 · 2023.5.8",
-            '为柯莱庆生制作。',
-            [
-                [new URL('https://www.bilibili.com/video/BV1qa4y1g7YK'),'B站视频']
-            ],
-            false,
-            ""
-        ),
-    ],
-    [
-        new cardData(
-            "wilderness",
-            "在野外露营",
-            'BeeUser12 与 TLL16，Ender_Fish 一起在野外露营，途中发生了什么许多有趣的事情呢？',
-            [
-                [new URL('https://www.bilibili.com/video/BV1VW4y1o73m'),'B站视频']
-            ],
-            true,
-            ""
-        ),
-        new cardData(
-            "pr129-kc-3",
-            "PR129 王国危机",
-            'PR129 惨遭黑化，危机悄然来临，在城堡里的所有伙伴将抵抗此次王国危机。',
-            [
-                [new URL('https://www.bilibili.com/video/BV1ab411C7Ck'),'上集'],
-                [new URL('https://www.bilibili.com/video/BV1Cb411r73z'),'中集'],
-                [new URL('https://www.bilibili.com/video/BV1yD4y1y7wJ'),'下集，但是搞笑版'],
-            ],
-            false,
-            ""
-        ),
-        new cardData(
-            "rem",
-            "Rosalina's 极限任务",
-            'Rosalina 惨遭被神秘人抓走，为了拯救她，途中被设下许多任务，大家齐心协力，共同解决一个个任务，最终拯救 Rosalina 并获知真相的故事。',
-            [
-                [new URL('https://www.bilibili.com/video/BV1x4411f7No'),'第2集'],
-                [new URL('https://www.bilibili.com/video/BV1p4411k7xi'),'第3集 第1幕'],
-                [new URL('https://www.bilibili.com/video/BV1pE411D7AQ'),'第3集 第2幕'],
-            ],
-            false,
-            ""
-        ),
-        new cardData(
-            "gaswc",
-            "世界连结危机",
-            '在 GMod 世界的某一处，某个组织正想法关闭 GMod 与其他世界的通道，来自 SM64 的各位伙伴们，将竭尽全力对抗这次连结危机。',
-            [
-                [new URL('https://www.bilibili.com/video/BV1RA411u73L'),'B站链接']
-            ],
-            false,
-            ""
-        )
-    ]
-] */
-var CardData;
+var jsonData;
 if (window.XMLHttpRequest) {
-    CardData = new XMLHttpRequest()
+    jsonData = new XMLHttpRequest()
 } else if (window.ActiveXObject) {
-    CardData = new window.ActiveXObject();
+    jsonData = new window.ActiveXObject();
 } else {
     console.log("Failed to get Data.")
 }
-if (CardData != null) {
-    CardData.open("GET","resource/videodata/data.json",true);
-    CardData.send(null);
-    CardData.onreadystatechange = function() {
-        if (CardData.readyState == 4 & CardData.status == 200) {
-            var obj = JSON.parse(CardData.responseText);
-            console.log(obj)
-            for (var name in obj) {
-                console.log(obj[name].key);
+var CardQuery = [document.querySelector('#cm-pc-genshin'),document.querySelector('#cm-pc-sm64b')];
+getJson(jsonData)
+function getJson(json) {
+    if (json != null) {
+        json.open("GET","resource/videodata/data.json",true);
+        json.send(null);
+        json.onreadystatechange = function() {
+            if (json.readyState == 4 & json.status == 200) {
+                insertData(json.responseText)
+                return true;
+            } else {
+                return false;
             }
         }
     }
@@ -115,18 +49,30 @@ function atag(url) {
     }
     return result
 }
-/*
-var CardQuery = [document.querySelector('#cm-pc-genshin'),document.querySelector('#cm-pc-sm64b')];
-for (var i = 0; i < CardQuery.length; i++) {
-    for (var j = 0; j < CardData[i].length; j++) {
-        CardQuery[i].innerHTML += cardStruct(
-            CardData[i][j].id,
-            CardData[i][j].title,
-            CardData[i][j].describe,
-            CardData[i][j].siteurl,
-            CardData[i][j].islight,
-            CardData[i][j].bimage
-        )
+
+function DeparseData(json) {
+    var type = json.type
+    var id = json.id
+    var name = json.name
+    var describe = json.describe
+    var url = json.urls
+    var islight = json.islight
+    var bg = json.cbg_source
+    return {type,id,name,describe,url,islight,bg}
+}
+
+function insertData(json) {
+    for (var i = 0; i < json.length; i++) {
+        a = DeparseData(JSON.parse(json)[i])
+        if (a.type == "genshin") {
+            CardQuery[0].innerHTML += cardStruct(a.id,a.name,a.describe,a.url,a.islight,a.bg)
+        } else if (a.type == "supermario64Blooper") {
+            CardQuery[1].innerHTML += cardStruct(a.id,a.name,a.describe,a.url,a.islight,a.bg)
+        }
+        console.log(a)
     }
 }
-*/
+/*
+        )
+    }
+}*/
