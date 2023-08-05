@@ -6,6 +6,7 @@ function cardData (id,title,describe,siteurl,islight,bimage){
     this.islight = islight
     this.bimage = bimage
 };
+/*
 var CardData = [
     [
         new cardData(
@@ -65,7 +66,28 @@ var CardData = [
             ""
         )
     ]
-]
+] */
+var CardData;
+if (window.XMLHttpRequest) {
+    CardData = new XMLHttpRequest()
+} else if (window.ActiveXObject) {
+    CardData = new window.ActiveXObject();
+} else {
+    console.log("Failed to get Data.")
+}
+if (CardData != null) {
+    CardData.open("GET","resource/videodata/data.json",true);
+    CardData.send(null);
+    CardData.onreadystatechange = function() {
+        if (CardData.readyState == 4 & CardData.status == 200) {
+            var obj = JSON.parse(CardData.responseText);
+            for (var name in obj) {
+                console.log(obj[name].key);
+            }
+        }
+    }
+}
+
 function cardStruct(id,title,describe,siteurl,islight,bimage) {
     var colormode,background_url;
     if (islight) colormode = "light"
@@ -92,6 +114,7 @@ function atag(url) {
     }
     return result
 }
+/*
 var CardQuery = [document.querySelector('#cm-pc-genshin'),document.querySelector('#cm-pc-sm64b')];
 for (var i = 0; i < CardQuery.length; i++) {
     for (var j = 0; j < CardData[i].length; j++) {
@@ -105,3 +128,4 @@ for (var i = 0; i < CardQuery.length; i++) {
         )
     }
 }
+*/
